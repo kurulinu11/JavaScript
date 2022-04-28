@@ -1,53 +1,67 @@
-// alert("UWAGA alert!");
-// const root = document.querySelector("#root");
-// root.style.height = "400px";
-// root.style.width = "400px";
-// root.style.backgroundColor = "blue";
 let nextId = 1;
 
-const newTaskElement = function(taskText) {
-    const div = document.createElement("div");
+const getTaskNameAnDescription = function () {
+    const taskName = document.querySelector("#task-name").value;
+    const taskDescription = document.querySelector("#task-description").value;
 
-    const idSpan = document.createElement("span");
-    idSpan.textContent = "ID: " + nextId; // lub: `ID: ${nextId}`;
+    return {taskName, taskDescription};
+};
 
-    const taskTextSpan = document.createElement("span");
-    taskTextSpan.textContent = taskText + " ";
+const addTask = function(){
+    const {taskName, taskDescription} = getTaskNameAnDescription();
+    const listItem = document.createElement("li");
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Usun";
+    listItem.classList = "list-group-item d-flex justify-content-between align-items-center";
 
-    const doneButton = document.createElement("button");
-    doneButton.textContent = "Zrobiono";
-
-    deleteButton.addEventListener("click", () => div.remove());
-
-    doneButton.addEventListener("click", () => {
-        if (doneButton.textContent === "Zrobiono") {
-            div.style.textDecoration = "line-through";
-            doneButton.textContent = "Wykonaj";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "form-control-checkbox";
+    checkbox.addEventListener("click", () => {
+        if (checkbox.checked == true) {
+            listItem.style.textDecoration = "line-through";
         } else {
-            div.style.textDecoration = "none";
-            doneButton.textContent = "Zrobiono";
+            listItem.style.textDecoration = "none";
         }
     });
 
-    div.append(idSpan, taskTextSpan, deleteButton, doneButton);
-    document.querySelector("#task-list").append(div);
+    const idSpan = document.createElement("span");
+    idSpan.textContent = 1 + nextId;
 
-    div.setAttribute("id", nextId); // lub: div.id = nextId;
+    const taskNameSpan = document.createElement("span");
+    taskNameSpan.textContent = taskName;
+
+    const taskDescriptionSpan = document.createElement("span");
+    taskDescriptionSpan.textContent = taskDescription;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.classList = "btn btn-danger";
+    deleteButton.addEventListener("click", () => listItem.remove());
+
+    listItem.append(
+        checkbox,
+        idSpan,
+        taskNameSpan,
+        taskDescriptionSpan,
+        deleteButton
+    );
+
+    document.querySelector("#task-list").append(listItem);
+    listItem.setAttribute("id", nextId);
     nextId++;
 };
 
-const getTaskText = function() {
-    const taskTextInput = document.querySelector("#task-text");
-    return taskTextInput.value;
-};
+const addTaskButton = document.querySelector("#add-task-btn");
+addTaskButton.addEventListener("click", addTask);
 
-const submitTaskButton = document.querySelector("#submit-task");
-submitTaskButton.addEventListener("click", () => {
-    const taskText = getTaskText();
-    newTaskElement(taskText);
+const clearTaskButton = document.querySelector("#clear-task-btn");
+
+clearTaskButton.addEventListener("click", function handleClick(event) {
+    event.preventDefault();
+
+    const inputs = document.querySelectorAll("#task-name, #task-description")
+
+    inputs.forEach(input => {
+        input.value = '';
+    });
 });
-
-
